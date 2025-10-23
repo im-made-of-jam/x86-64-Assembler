@@ -344,6 +344,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		std
 		sti
 
+		ret
+		syscall
+		sysret
+
 		cpuid
 		lock
 			yes this is actually a prefix but in this assembler it goes the line before the instruction to be locked
@@ -889,6 +893,20 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	else if(operation == "sti"){
 		output.data.push_back(0xFB);
 		return output;
+	}
+	else if(operation == "ret"){
+		output.data.push_back(0xC3);
+		return output;
+	}
+	else if(operation == "syscall"){
+		output.data.push_back(0x0F);
+		output.data.push_back(0x05);
+		return output;
+	}
+	else if(operation == "sysret"){
+		output.data.push_back(getREXByte(true, false, false, false));
+		output.data.push_back(0x0F);
+		output.data.push_back(0x07);
 	}
 	else{ // no such operation
 		std::string errorMessage = "no such operation \"";

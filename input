@@ -1,1 +1,2 @@
-mov rax fs
+syscall
+sysret

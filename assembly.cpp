@@ -347,6 +347,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		ret
 		syscall
 		sysret
+		hlt
 
 		cpuid
 		lock
@@ -907,6 +908,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		output.data.push_back(getREXByte(true, false, false, false));
 		output.data.push_back(0x0F);
 		output.data.push_back(0x07);
+	}
+	else if(operation == "hlt"){
+		output.data.push_back(0xF4);
+		return output;
 	}
 	else{ // no such operation
 		std::string errorMessage = "no such operation \"";

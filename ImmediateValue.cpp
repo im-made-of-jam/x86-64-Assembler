@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 ImmediateValue getImmediate(std::string numberToGet){
 	uint64_t rawValue;
@@ -44,6 +45,8 @@ ImmediateValue getImmediate(std::string numberToGet){
 			rawValue = rawValue >> 8;
 		}
 	}
+
+	std::reverse(returnThis.value.begin(), returnThis.value.end());
 
 	return returnThis;
 };

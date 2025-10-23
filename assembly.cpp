@@ -511,6 +511,22 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			// one is a segment register, the other is not
 			std::cout << "one but not both" << std::endl;
 
+			if(segmentDestIndex == 7){
+				// destination is NOT a segment register
+				output.data.push_back(getREXByte(true, false, false, ((destinationInformation & registerInformationExtendedMask) != 0)));
+				output.data.push_back(0x8C);
+				output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), segmentSourceIndex));
+
+				return output;
+			}
+			else{
+				// source is NOT a segment register
+				output.data.push_back(getREXByte(true, false, false, ((destinationInformation & registerInformationExtendedMask) != 0)));
+				output.data.push_back(0x8E);
+				output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), segmentSourceIndex));
+
+				return output;
+			}
 			//!TODO mov Sreg/reg64
 		}
 		if((!(segmentDestIndex == 7)) && (!(segmentSourceIndex == 7))){

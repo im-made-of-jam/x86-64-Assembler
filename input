@@ -1,1 +1,1 @@
-mov gs rax
+mov rax fs

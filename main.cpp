@@ -8,10 +8,10 @@
 #include "assembly.h"
 
 int main(){
-	for(std::string line : getFileLines("./input")){
-		AssemblerLine a = assembleOneInstruction(line);
+	for(std::string line : tasm::getFileLines("./input")){
+		tasm::AssemblerLine a = tasm::assembleOneInstruction(line);
 
-		if(a.type == AssemblerLine::type_invalid){
+		if(a.type == tasm::AssemblerLine::type_invalid){
 			std::cout << std::endl << std::string(a.data.begin(), a.data.end()) << std::endl;
 		}
 		else{

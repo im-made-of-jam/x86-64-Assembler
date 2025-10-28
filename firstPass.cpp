@@ -6,6 +6,8 @@
 #include <iostream>
 #include <algorithm>
 
+namespace tasm{
+
 std::vector<AssemblerLine> firstPass(const std::vector<std::string>& inputLines){
 	std::vector<AssemblerLine> output;
 
@@ -19,3 +21,5 @@ std::vector<AssemblerLine> firstPass(const std::vector<std::string>& inputLines)
 
 	return output;
 }
+
+}; // namespace tasm

@@ -3,6 +3,8 @@
 #include <string>
 #include <cstdint>
 
+namespace tasm{
+
 struct AssemblerLine{
 	enum uint64_t{
 		type_none        = 0,
@@ -23,3 +25,5 @@ struct AssemblerLine{
 	// intended for things such as jump targets in terms of label names, before theyve been translated into actual values
 	std::vector<uint8_t> data;
 };
+
+}; // namespace tasm

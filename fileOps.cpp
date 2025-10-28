@@ -5,6 +5,8 @@
 #include <fstream>
 #include <algorithm>
 
+namespace tasm{
+
 std::vector<std::string> getFileLines(std::string pathToFile){
 	std::vector<std::string> everyLine;
 
@@ -79,3 +81,5 @@ std::vector<std::string> split(std::string splitThis, char onThisChar){
 
 	return output;
 }
+
+}; // namespace tasm

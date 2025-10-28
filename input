@@ -1,1 +1,6 @@
-mov rax 0x123456789abcdef0
+mov rax gs
+shl rax
+shl rax
+mov rbx 60
+add rax rbx
+mov* rax rax

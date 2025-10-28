@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstdint>
 
+namespace tasm{
+
 struct ImmediateValue{
 	enum {
 		type_valid      = 0,
@@ -18,3 +20,5 @@ struct ImmediateValue{
 };
 
 ImmediateValue getImmediate(std::string);
+
+}; // namespace tasm

@@ -22,6 +22,8 @@ namespace std{
 }
 #endif
 
+namespace tasm{
+
 uint8_t getREXByte(bool wide, bool RExtend, bool indexExtend, bool MExtend){
 	uint8_t returnByte = 0b01000000;
 	if(wide){
@@ -932,3 +934,5 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 AssemblerLine assembleOneInstruction(std::string input){
 	return assembleOneInstruction(input, 0);
 }
+
+}; // namespace tasm

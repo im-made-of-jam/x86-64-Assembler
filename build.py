@@ -82,4 +82,5 @@ if (__name__ == "__main__"):
 		with multiprocessing.Pool(processes=len(filesToCompile)) as pool:
 			pool.map(gccCompile, filesToCompile)
 
+	print("compiling object files")
 	os.system("""powershell "Invoke-Expression 'g++ ./.objectFiles/*.o -o ./main' """)

@@ -6,6 +6,8 @@
 
 #include "AssemblerLine.h"
 
+namespace tasm{
+
 constexpr uint8_t index_ax = 0;
 constexpr uint8_t index_cx = 1;
 constexpr uint8_t index_dx = 2;
@@ -28,3 +30,5 @@ AssemblerLine assembleOneInstruction(std::string);
 AssemblerLine assembleOneInstruction(std::string, uint64_t);
 uint8_t getModRMByteNoIndirect(uint32_t, uint32_t);
 uint8_t getRegisterInformation(std::string);
+
+}; // namespace tasm

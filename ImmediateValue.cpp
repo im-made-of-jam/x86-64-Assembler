@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 
+namespace tasm{
+
 ImmediateValue getImmediate(std::string numberToGet){
 	uint64_t rawValue;
 	uint64_t unused;
@@ -50,3 +52,5 @@ ImmediateValue getImmediate(std::string numberToGet){
 
 	return returnThis;
 };
+
+}; // namespace tasm

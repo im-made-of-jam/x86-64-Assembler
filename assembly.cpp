@@ -388,11 +388,11 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		arg1 = splitLine[1];
 		destinationInformation = getRegisterInformation(splitLine[1]);
 	}
-	else if(splitLine.size() > 2){
+	if(splitLine.size() > 2){
 		arg2 = splitLine[2];
 		sourceInformation = getRegisterInformation(splitLine[2]);
 	}
-	else{
+	if(splitLine.size() == 1){
 		// one element on the line, check for label
 		if(input.at(input.size() - 1) == ':'){
 			output.type = AssemblerLine::type_label;

@@ -15,7 +15,7 @@ int main(){
 			std::cout << std::endl << std::string(a.data.begin(), a.data.end()) << std::endl;
 		}
 		else if(a.type == tasm::AssemblerLine::type_label){
-			std::cout << "label called " << a.contents << std::endl;
+			std::cout << std::endl << "label called " << a.contents << std::endl;
 		}
 		else{
 			for(uint64_t i = 0; i < a.data.size(); ++i){

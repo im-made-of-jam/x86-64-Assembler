@@ -14,6 +14,9 @@ int main(){
 		if(a.type == tasm::AssemblerLine::type_invalid){
 			std::cout << std::endl << std::string(a.data.begin(), a.data.end()) << std::endl;
 		}
+		else if(a.type == tasm::AssemblerLine::type_label){
+			std::cout << "label called " << a.contents << std::endl;
+		}
 		else{
 			for(uint64_t i = 0; i < a.data.size(); ++i){
 				std::string outputString = std::format("{:x}", static_cast<uint64_t>(a.data[i]));

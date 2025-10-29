@@ -1,6 +1,30 @@
-mov rax gs
-shl rax
-shl rax
-mov rbx 60
+push rsi
+push rbx
+
+tebfinder
+; rax = PEB*
+mov rsi rax
+; rsi = PEB*
+
+mov rbx 0x18
+add rax rbx
+; rax = &(PEB->Ldr)
+
+mov* rax rax
+; rax = PEB->Ldr
+
+mov rbx 0x20
+add rax rbx
+mov* rsi rax
+; rsi = PEB->Ldr->InMemoryOrderModuleList
+
+lodsq
+xchg rax rsi
+lodsq
+mov rbx 0x20
 add rax rbx
 mov* rax rax
+
+pop rbx
+pop rsi
+ret

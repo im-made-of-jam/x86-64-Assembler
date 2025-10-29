@@ -316,12 +316,13 @@ AssemblerLine registerToRegister(AssemblerLine input, uint8_t destinationInforma
 //	whitespace is important and is what separates different parts of the instruction
 //	said whitespace must be a simple space character (0x20)
 AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
-	/*
-	currently implemented:
+	/* currently implemented:
 		mov r/r
 		mov r/i
 		mov r/[r]
 		mov [r]/r
+
+		lodsq
 
 		xchg r/r
 		xor r/r
@@ -355,6 +356,9 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		lock
 			yes this is actually a prefix but in this assembler it goes the line before the instruction to be locked
 	*/
+	/* mnemonics that map to real instructions but actually arent real mnemonics
+		pebFinder (mov rax, gs:[0x60])
+	*/
 	AssemblerLine output{.contents = input, .type=AssemblerLine::type_unprocessed};
 
 	// the binary encoding of the instruction
@@ -370,9 +374,15 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	uint8_t sourceInformation;
 
 	if(splitLine.size() == 0){
+		// empty line can just be returned
 		output.type = AssemblerLine::type_none;
+		return output;
 	}
 	operation = splitLine[0];
+	if(operation.at(0) == ';'){
+		output.type = AssemblerLine::type_none;
+		return output;
+	}
 
 	if(splitLine.size() > 1){
 		arg1 = splitLine[1];
@@ -515,9 +525,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		uint8_t segmentDestIndex = getSegmentRegisterIndex(splitLine[1]);
 
 		if((segmentSourceIndex != 7) != (segmentDestIndex != 7)){
-			// one is a segment register, the other is not
-			std::cout << "one but not both" << std::endl;
-
+			// one is a segment register, the other is no
 			if(segmentDestIndex == 7){
 				// destination is NOT a segment register
 				output.data.push_back(getREXByte(true, false, false, ((destinationInformation & registerInformationExtendedMask) != 0)));
@@ -913,6 +921,27 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	}
 	else if(operation == "hlt"){
 		output.data.push_back(0xF4);
+		return output;
+	}
+	else if(operation == "lodsq"){
+		output.data.push_back(getREXByte(true, false, false, false));
+		output.data.push_back(0xAD);
+
+		return output;
+	}
+	else if(operation == "tebfinder"){
+		output.data.push_back(0x65);
+		output.data.push_back(0x48);
+		output.data.push_back(0xA1);
+		output.data.push_back(0x60);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+		output.data.push_back(0x00);
+
 		return output;
 	}
 	else{ // no such operation

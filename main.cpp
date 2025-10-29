@@ -16,7 +16,11 @@ int main(){
 		}
 		else{
 			for(uint64_t i = 0; i < a.data.size(); ++i){
-				std::cout << std::hex << static_cast<uint64_t>(a.data[i]) << std::dec << " " << std::flush;
+				std::string outputString = std::format("{:x}", static_cast<uint64_t>(a.data[i]));
+				if(outputString.size() == 1){
+					outputString = "0" + outputString;
+				}
+				std::cout << outputString << " " << std::flush;
 			}
 		}
 	}

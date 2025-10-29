@@ -524,7 +524,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		return dataCopy;
 	};
 
-	if(operation == "mov"){
+	if(operation == "mov"){ // mov r64, r64     OR     mov r64, imm     OR     mov sreg, r64     OR     mov r64, sreg
 		output = errorOnLessThanTwo("mov");
 
 		// try for segment registers
@@ -670,42 +670,42 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "xchg"){
+	else if(operation == "xchg"){ // xchg r64, r64
 		output = errorOnLessThanTwo(operation);
 
-		if(destinationInformation && sourceInformation){ // xchg r64, r64
+		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x87});
 		}
 	}
-	else if(operation == "xor"){
+	else if(operation == "xor"){ // xor r64, r64
 		output = errorOnLessThanTwo(operation);
 
-		if(destinationInformation && sourceInformation){ // xor r64, r64
+		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x33});
 		}
 	}
-	else if(operation == "add"){
+	else if(operation == "add"){ // add r64, r64
 		output = errorOnLessThanTwo(operation);
 
-		if(destinationInformation && sourceInformation){ // add r64, r64
+		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x01});
 		}
 	}
-	else if(operation == "adc"){
+	else if(operation == "adc"){ // add r64, r64
 		output = errorOnLessThanTwo(operation);
 
-		if(destinationInformation && sourceInformation){ // add r64, r64
+		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x11});
 		}
 	}
-	else if(operation == "sub"){
+	else if(operation == "sub"){ // sub r64, r64
 		output = errorOnLessThanTwo(operation);
 
-		if(destinationInformation && sourceInformation){ // sub r64, r64
+		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x29});
 		}
 	}
-	else if(operation == "lock"){
+	else if(operation == "lock"){ //             yes this is a prefix dont mind it being here
 		output.data.push_back(0xF0);
 
 		return output;
@@ -848,7 +848,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "shl"){
+	else if(operation == "shl"){ // shifts by one bit
 		errorOnLessThanOne("shl");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -868,7 +868,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "shr"){
+	else if(operation == "shr"){ // shifts by one bit
 		errorOnLessThanOne("shr");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -936,7 +936,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "tebfinder"){
+	else if(operation == "tebfinder"){ // mov rax, gs:[0x60]
 		output.data.push_back(0x65);
 		output.data.push_back(0x48);
 		output.data.push_back(0xA1);

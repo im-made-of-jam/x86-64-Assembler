@@ -1,6 +1,7 @@
 // THIS WHOLE THING USES A BASTARDIZED VERSION OF INTEL SYNTAX
 // COPE
 // (its basically just intel syntax without the comma)
+// ((plus a couple of things that i could not be bothered implementing properly (see: tebfinder)))
 #include <iostream>
 
 #include "fileOps.h"

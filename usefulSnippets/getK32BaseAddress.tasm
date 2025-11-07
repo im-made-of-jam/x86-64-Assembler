@@ -1,5 +1,6 @@
 getK32BaseAddress:
-; stolen from https://rootfu.in/how-to-part-1-find-dllbase-address-from-peb-in-x64-assembly/
+; stolen from https://rootfu.in/how-to-part-1-find-dllbase-address-from-peb-in-x64-assembly/, https://web.archive.org/web/20250901195517/https://rootfu.in/how-to-part-1-find-dllbase-address-from-peb-in-x64-assembly/
+; then translated from proper x64 asm to tasm64
 push rsi
 push rbx
 

@@ -2,3 +2,5 @@
 .vscode/
 .build_py_fileHashes.dat
 pe.py
+testing.cpp
+testing.exe

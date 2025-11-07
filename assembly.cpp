@@ -14,14 +14,6 @@
 
 // for instructions of the form (r, r/m), quite literally because i cannot be bothered, they only support register to register for now
 
-// this makes the squiggles for std format go away
-#if __cplusplus < 202002L
-namespace std{
-	std::string format(std::string, std::string, uint64_t);
-	std::string format(std::string, uint64_t);
-}
-#endif
-
 namespace tasm{
 
 uint8_t getREXByte(bool wide, bool RExtend, bool indexExtend, bool MExtend){
@@ -677,28 +669,28 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x87});
 		}
 	}
-	else if(operation == "xor"){ // xor r64, r64
+	else if(operation == "xor"){  // xor r64, r64
 		output = errorOnLessThanTwo(operation);
 
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x33});
 		}
 	}
-	else if(operation == "add"){ // add r64, r64
+	else if(operation == "add"){  // add r64, r64
 		output = errorOnLessThanTwo(operation);
 
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x01});
 		}
 	}
-	else if(operation == "adc"){ // add r64, r64
+	else if(operation == "adc"){  // add r64, r64
 		output = errorOnLessThanTwo(operation);
 
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x11});
 		}
 	}
-	else if(operation == "sub"){ // sub r64, r64
+	else if(operation == "sub"){  // sub r64, r64
 		output = errorOnLessThanTwo(operation);
 
 		if(destinationInformation && sourceInformation){
@@ -710,10 +702,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "pop"){
+	else if(operation == "pop"){  // pop r64
 		return oneByteOnly({0x58}, operation);
 	}
-	else if(operation == "push"){
+	else if(operation == "push"){ // push r64
 		return oneByteOnly({0x50}, operation);
 	}
 	else if(operation == "cpuid"){
@@ -726,7 +718,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "inc"){
+	else if(operation == "inc"){  // inc r64
 		errorOnLessThanOne("inc");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -747,7 +739,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "dec"){
+	else if(operation == "dec"){  // dec r64
 		errorOnLessThanOne("dec");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -768,7 +760,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "div"){
+	else if(operation == "div"){  // div r64
 		errorOnLessThanOne("div");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -788,7 +780,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "idiv"){
+	else if(operation == "idiv"){ // idiv r64
 		errorOnLessThanOne("idiv");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -808,7 +800,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "mul"){
+	else if(operation == "mul"){  // mul r64
 		errorOnLessThanOne("mul");
 
 		if(output.type == AssemblerLine::type_invalid){
@@ -828,7 +820,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else if(operation == "imul"){
+	else if(operation == "imul"){ // imul r64
 		errorOnLessThanOne("imul");
 
 		if(output.type == AssemblerLine::type_invalid){

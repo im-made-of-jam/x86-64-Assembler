@@ -1,0 +1,2 @@
+startOfElf and endOfElf were more or less stolen from here with a little bit of work to split them up and find offsets within
+https://nathanotterness.com/2021/10/tiny_elf_modernized.html

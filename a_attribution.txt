@@ -1,2 +1,7 @@
 startOfElf and endOfElf were more or less stolen from here with a little bit of work to split them up and find offsets within
 https://nathanotterness.com/2021/10/tiny_elf_modernized.html
+
+
+the getK32BaseAddress function was more or less yoinked from these two sites then translated into tasm
+https://rootfu.in/how-to-part-1-find-dllbase-address-from-peb-in-x64-assembly/
+https://web.archive.org/web/20250901195517/https://rootfu.in/how-to-part-1-find-dllbase-address-from-peb-in-x64-assembly/

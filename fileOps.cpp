@@ -82,4 +82,40 @@ std::vector<std::string> split(std::string splitThis, char onThisChar){
 	return output;
 }
 
+void writeElf(std::string outputFilename, std::vector<uint8_t> textSection){
+	// open both input files
+	std::ifstream elfStart("./binaryLib/startOfElf.bin", std::ifstream::binary);
+	std::ifstream elfEnd("./binaryLib/endOfElf.bin", std::ifstream::binary);
+	// open output file
+	std::ofstream outputFile(outputFilename, std::ofstream::binary);
+
+	// find size of both input files
+	elfStart.seekg(0, elfStart.end);
+	uint32_t elfStartSize = elfStart.tellg();
+	elfStart.seekg(0, elfStart.beg);
+
+	elfEnd.seekg(0, elfEnd.end);
+	uint32_t elfEndSize = elfEnd.tellg();
+	elfEnd.seekg(0, elfEnd.beg);
+
+	// make buffers for readung from both input files
+	char* elfStartBuffer = new char[elfStartSize];
+	char* elfEndBuffer   = new char[elfEndSize];
+
+	// go and pull out the data from both input files
+	elfStart.read(elfStartBuffer, elfStartSize);
+	elfEnd.read(elfEndBuffer, elfEndSize);
+
+	// write the start to the file
+	outputFile.write(elfStartBuffer, elfStartSize);
+
+	// write the actual code we want
+	for(uint8_t byte : textSection){
+		outputFile << byte;
+	}
+
+	// now write the end of the file
+	outputFile.write(elfEndBuffer, elfEndSize);
+}
+
 }; // namespace tasm

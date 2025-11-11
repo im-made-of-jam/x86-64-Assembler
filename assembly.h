@@ -26,9 +26,16 @@ constexpr uint8_t index_13 = 5;
 constexpr uint8_t index_14 = 6;
 constexpr uint8_t index_15 = 7;
 
+// one line of assembler code, that gets turned into binary data
 AssemblerLine assembleOneInstruction(std::string);
+
+// one line of assembler code, that gets turned into binary data, including the line number
 AssemblerLine assembleOneInstruction(std::string, uint64_t);
+
+// get a ModR/M byte without any indirection
 uint8_t getModRMByteNoIndirect(uint32_t, uint32_t);
+
+// gets size, extended, and index information about a register from a string representing its name
 uint8_t getRegisterInformation(std::string);
 
 }; // namespace tasm

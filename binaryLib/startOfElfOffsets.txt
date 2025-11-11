@@ -1,0 +1,5 @@
+0x60   (qword) = endOfElf.bin offset
+0x68   (qword) = enfOfElf.bin offset
+0xD8   (qword) = file size
+0x0108 (qword) = endOfElf.bin offset  +  (4096*40)
+0x0110 (qword) = endOfElf.bin offset

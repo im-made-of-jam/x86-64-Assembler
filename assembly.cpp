@@ -12,6 +12,10 @@
 #include "AssemblerLine.h"
 #include "ImmediateValue.h"
 
+#include <elf.h>
+
+Elf64_Off a;
+
 // for instructions of the form (r, r/m), quite literally because i cannot be bothered, they only support register to register for now
 
 namespace tasm{

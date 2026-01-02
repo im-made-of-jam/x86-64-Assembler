@@ -22,8 +22,11 @@ struct AssemblerLine{
 
 	uint64_t type = type_none; // the type of line from the assembler
 
-	// intended for things such as jump targets in terms of label names, before theyve been translated into actual values
+	// data relevant to the type e.g. binary for an instruction, a string in bytes for error, offset for a label etc.
 	std::vector<uint8_t> data;
+
+	// indicates that the instruction needs patching, for example to write in a memory immediate
+	bool needsPatching = false;
 };
 
 }; // namespace tasm

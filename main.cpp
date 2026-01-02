@@ -3,12 +3,19 @@
 // (its basically just intel syntax without the comma)
 // ((plus a couple of things that i could not be bothered implementing properly (see: tebfinder)))
 #include <iostream>
+#include <fstream>
 
 #include "fileOps.h"
 #include "firstPass.h"
 #include "assembly.h"
 
 int main(){
+    std::ofstream outputElf("./z_testelf", std::ios::binary);
+    std::ifstream elfBegin("./binaryLib/startOfElf.bin", std::ios::binary);
+    std::ifstream elfEnd  ("./binaryLib/endOfElf.bin", std::ios::binary);
+
+    outputElf << elfBegin.rdbuf();
+
 	for(std::string line : tasm::getFileLines("./input")){
 		tasm::AssemblerLine a = tasm::assembleOneInstruction(line);
 
@@ -27,5 +34,11 @@ int main(){
 				std::cout << outputString << " " << std::flush;
 			}
 		}
+
+        for(uint8_t byte : a.data){
+            outputElf << byte;
+        }
 	}
+
+    outputElf << elfEnd.rdbuf();
 }

@@ -11,6 +11,7 @@
 #include "fileOps.h"
 #include "AssemblerLine.h"
 #include "ImmediateValue.h"
+#include "directives.h"
 
 #include <elf.h>
 
@@ -395,6 +396,17 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return output;
 		}
 	}
+
+    // check for directives
+    if(input.at(0) == '.'){
+        if(isValidDirective(splitLine[0])){
+            output.type = AssemblerLine::type_directive;
+            return output;
+        }
+
+        output.type = AssemblerLine::type_invalid;
+        return output;
+    }
 
 	uint64_t destDataSize = (destinationInformation & registerInformationSizeMask) >> 6;
 

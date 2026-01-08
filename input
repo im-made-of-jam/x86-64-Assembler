@@ -1,3 +1,6 @@
+.include "apple"
 mov rax 60
-mov rdi 69
+mov rdi 68
 syscall
+
+.insert

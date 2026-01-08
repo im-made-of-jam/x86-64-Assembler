@@ -8,13 +8,10 @@
 #include "fileOps.h"
 #include "firstPass.h"
 #include "assembly.h"
+#include "directives.h"
 
 int main(){
-    std::ofstream outputElf("./z_testelf", std::ios::binary);
-    std::ifstream elfBegin("./binaryLib/startOfElf.bin", std::ios::binary);
-    std::ifstream elfEnd  ("./binaryLib/endOfElf.bin", std::ios::binary);
-
-    outputElf << elfBegin.rdbuf();
+    std::vector<uint8_t> combinedData;
 
 	for(std::string line : tasm::getFileLines("./input")){
 		tasm::AssemblerLine a = tasm::assembleOneInstruction(line);
@@ -36,9 +33,13 @@ int main(){
 		}
 
         for(uint8_t byte : a.data){
-            outputElf << byte;
+            combinedData.push_back(byte);
+        }
+
+        if(a.type == tasm::AssemblerLine::type_directive){
+            std::cout << tasm::hasImport(a) << std::endl;
         }
 	}
 
-    outputElf << elfEnd.rdbuf();
+    tasm::writeElf("./z_testelf", combinedData);
 }

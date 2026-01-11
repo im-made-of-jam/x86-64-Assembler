@@ -15,7 +15,7 @@ uint32_t isValidDirective(std::string);
 
 std::vector<uint8_t> getInsertBytes(AssemblerLine);
 
-static int16_t getByteFromHex(std::string);
+static inline int16_t getByteFromHex(std::string);
 
 namespace directive_type{
 

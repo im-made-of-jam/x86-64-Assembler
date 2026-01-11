@@ -8,13 +8,14 @@ namespace tasm{
 
 struct AssemblerLine{
 	enum uint64_t{
-		type_none        = 0,
-		type_instruction = 1 << 0,
-		type_label       = 1 << 1,
-		type_directive   = 1 << 2,
-		type_data        = 1 << 3,
-		type_invalid     = 1 << 4,
-		type_unprocessed = 1 << 5
+		type_none              = 0,
+		type_instruction       = 1 << 0,
+		type_label             = 1 << 1,
+		type_directive         = 1 << 2,
+		type_data              = 1 << 3,
+		type_invalid           = 1 << 4,
+		type_unprocessed       = 1 << 5,
+        type_invalid_directive = 1 << 6
 	};
 	std::string contents;      // the source line that the instruction came from
 

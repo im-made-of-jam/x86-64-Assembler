@@ -399,12 +399,14 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
     // check for directives
     if(input.at(0) == '.'){
-        if(isValidDirective(splitLine[0])){
+        uint64_t directiveType = isValidDirective(splitLine[0]);
+        if(directiveType){
             output.type = AssemblerLine::type_directive;
+            output.data.push_back(directiveType);
             return output;
         }
 
-        output.type = AssemblerLine::type_invalid;
+        output.type = AssemblerLine::type_invalid_directive;
         return output;
     }
 

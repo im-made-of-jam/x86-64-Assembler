@@ -16,12 +16,40 @@ int main(){
 	for(std::string line : tasm::getFileLines("./input")){
 		tasm::AssemblerLine a = tasm::assembleOneInstruction(line);
 
-		if(a.type == tasm::AssemblerLine::type_invalid){
-			std::cout << std::endl << std::string(a.data.begin(), a.data.end()) << std::endl;
+		if(a.type == tasm::AssemblerLine::type_invalid_directive){
+			std::cout << "Invalid directive: '" << std::string(a.contents) << "'" << std::endl;
 		}
-		else if(a.type == tasm::AssemblerLine::type_label){
-			std::cout << std::endl << "label called " << a.contents << std::endl;
-		}
+        else if(a.type == tasm::AssemblerLine::type_invalid){
+            std::cout << std::string{a.data.begin(), a.data.end()} << std::endl;
+        }
+        else if(a.type == tasm::AssemblerLine::type_directive){
+            switch(a.data[a.data.size() - 1]){
+                case tasm::directive_type::invalid:{
+                    break;
+                }
+                case tasm::directive_type::include:{
+                    std::string includePath = tasm::hasImport(a);
+
+                    if(includePath.size()){
+                        std::cout << "Include: " << includePath << std::endl;
+                    }
+                    break;
+                }
+                case tasm::directive_type::insert:{
+                    std::cout << "Insert: ";
+                    std::vector<uint8_t> bytes = tasm::getInsertBytes(a);
+                    for(uint32_t i = 0; i < bytes.size(); ++i){
+                        std::cout << std::hex << 0ull + bytes[i] << std::dec << ' ';
+                    }
+                    std::cout << std::endl;
+                    break;
+                }
+                case tasm::directive_type::message:{
+                    std::cout << "Message: " << tasm::getMessage(a) << std::endl;
+                    break;
+                }
+            }
+        }
 		else{
 			for(uint64_t i = 0; i < a.data.size(); ++i){
 				std::string outputString = std::format("{:x}", static_cast<uint64_t>(a.data[i]));
@@ -34,10 +62,6 @@ int main(){
 
         for(uint8_t byte : a.data){
             combinedData.push_back(byte);
-        }
-
-        if(a.type == tasm::AssemblerLine::type_directive){
-            std::cout << tasm::hasImport(a) << std::endl;
         }
 	}
 

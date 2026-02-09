@@ -339,6 +339,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
         and r/r
 
+        test r/r
+
 		clc
 		cld
 		cli
@@ -988,14 +990,17 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			output.data.push_back(0x66);
 		}
 
-		if((destDataSize == 3) || ((destinationInformation & registerInformationExtendedMask) >> 3)){
-			output.data.push_back(getREXByte((destDataSize == 3), false, false, ((destinationInformation & registerInformationExtendedMask) >> 3)));
-		}
-
 		output.data.push_back(0xFF);
 		output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), 2));
 
 		return output;
+	}
+    else if(operation == "test"){  // test r64, r64
+		output = errorOnLessThanTwo(operation);
+
+		if(destinationInformation && sourceInformation){
+			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x85});
+		}
 	}
     else{ // no such operation
 		std::string errorMessage = "no such operation \"";

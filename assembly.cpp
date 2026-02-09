@@ -315,7 +315,7 @@ AssemblerLine registerToRegister(AssemblerLine input, uint8_t destinationInforma
 AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	/* currently implemented:
 		mov r/r
-		mov r/i
+		mov r/imm
 		mov r/[r]
 		mov [r]/r
 
@@ -337,6 +337,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		shl
 		shr
 
+        and r/r
+
 		clc
 		cld
 		cli
@@ -344,7 +346,9 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		std
 		sti
 
+        callr r
 		ret
+        leave
 		syscall
 		sysret
 		hlt
@@ -579,9 +583,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x89});
 		}
 
-		if(destinationInformation && (!sourceInformation)){ // mov r64, i64
+		if(destinationInformation && (!sourceInformation)){ // mov r64, imm64
 			// main bytes plus prefixes
 			AssemblerLine instruction = oneByteOnly({0xB8}, operation, (destDataSize == 3));
+            instruction.needsPatching = true;
 
 			// extra bytes added on at the end
 			ImmediateValue imm = getImmediate(arg2);
@@ -940,6 +945,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		output.data.push_back(0xF4);
 		return output;
 	}
+    else if(operation == "leave"){
+		output.data.push_back(0xC9);
+		return output;
+	}
 	else if(operation == "lodsq"){
 		output.data.push_back(getREXByte(true, false, false, false));
 		output.data.push_back(0xAD);
@@ -961,7 +970,34 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	else{ // no such operation
+    else if(operation == "and"){
+        output = errorOnLessThanTwo(operation);
+
+		if(destinationInformation && sourceInformation){
+			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x21});
+		}
+    }
+	else if(operation == "callr"){  // call r64
+		errorOnLessThanOne("callr");
+
+		if(output.type == AssemblerLine::type_invalid){
+			return output;
+		}
+
+		if(destDataSize == 1){
+			output.data.push_back(0x66);
+		}
+
+		if((destDataSize == 3) || ((destinationInformation & registerInformationExtendedMask) >> 3)){
+			output.data.push_back(getREXByte((destDataSize == 3), false, false, ((destinationInformation & registerInformationExtendedMask) >> 3)));
+		}
+
+		output.data.push_back(0xFF);
+		output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), 2));
+
+		return output;
+	}
+    else{ // no such operation
 		std::string errorMessage = "no such operation \"";
 		errorMessage.append(operation);
 		errorMessage.append("\" exists");
@@ -974,7 +1010,9 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-	return output;
+
+    // this *should* be unreachable
+    return output;
 }
 
 AssemblerLine assembleOneInstruction(std::string input){

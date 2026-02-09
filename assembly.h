@@ -26,6 +26,12 @@ constexpr uint8_t index_13 = 5;
 constexpr uint8_t index_14 = 6;
 constexpr uint8_t index_15 = 7;
 
+// create a REX byte based off of things such as the accessed registers being wide, extended, etc.
+static uint8_t getREXByte(bool, bool, bool, bool);
+
+// see getModRMByteNoIndirect
+uint8_t getModRMByteIndirect(bool, bool, uint32_t, uint32_t);
+
 // one line of assembler code, that gets turned into binary data
 AssemblerLine assembleOneInstruction(std::string);
 
@@ -37,5 +43,11 @@ uint8_t getModRMByteNoIndirect(uint32_t, uint32_t);
 
 // gets size, extended, and index information about a register from a string representing its name
 uint8_t getRegisterInformation(std::string);
+
+// only 6 exist so the default return value of 7 is an error value
+static uint8_t getSegmentRegisterIndex(std::string);
+
+// generate an instsruction for register to register operations
+AssemblerLine registerToRegister(AssemblerLine, uint8_t, uint8_t, uint64_t, std::string, std::vector<uint8_t>);
 
 }; // namespace tasm

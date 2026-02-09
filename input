@@ -3,6 +3,8 @@ mov rax 60
 mov rdi 68
 syscall
 
+callr rax
+
 .include "banana"
 .message your mum
-.insert 33 45 aa bb ff 00 aaa
+.insert 33 45 aa bb ff 00 aa

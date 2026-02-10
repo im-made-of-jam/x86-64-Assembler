@@ -319,6 +319,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		mov r/[r]
 		mov [r]/r
 
+        the whole cmovcc family with r/r
+
 		lodsq
 
 		xchg r/r
@@ -1001,6 +1003,128 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x85});
 		}
+	}
+    else if(operation.size() >= 4 && operation.substr(0, 4) == "cmov"){
+        if(operation.size() == 4){
+            output.type = AssemblerLine::type_invalid;
+
+            std::string errorMessage = "conditional move with no condition";
+            for(char c : errorMessage){
+                output.data.push_back(c);
+            }
+
+            return output;
+        }
+
+    	output = errorOnLessThanTwo("cmovcc");
+        if(output.type == AssemblerLine::type_invalid){
+            return output;
+        }
+
+        // now get the actual opcode
+        std::vector<uint8_t> opcode;
+        if(operation == "cmovo"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x40);
+        }
+        else if(operation == "cmovno"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x41);
+        }
+        else if(operation == "cmovb" || operation == "cmovc" || operation == "cmovnae"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x42);
+        }
+        else if(operation == "cmovae" || operation == "cmovnb" || operation == "cmovnc"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x43);
+        }
+        else if(operation == "cmove" || operation == "cmovz"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x44);
+        }
+        else if(operation == "cmovne" || operation == "cmovnz"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x45);
+        }
+        else if(operation == "cmovbe" || operation == "cmovna"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x46);
+        }
+        else if(operation == "cmova" || operation == "cmovnbe"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x47);
+        }
+        else if(operation == "cmovs"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x48);
+        }
+        else if(operation == "cmovns"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x49);
+        }
+        else if(operation == "cmovp" || operation == "cmovpe"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4A);
+        }
+        else if(operation == "cmovnp" || operation == "cmovpo"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4B);
+        }
+        else if(operation == "cmovl" || operation == "cmovnge"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4C);
+        }
+        else if(operation == "cmovge" || operation == "cmovnl"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4D);
+        }
+        else if(operation == "cmovle" || operation == "cmovng"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4E);
+        }
+        else if(operation == "cmovg" || operation == "cmovnle"){
+            opcode.push_back(0x0F);
+            opcode.push_back(0x4F);
+        }
+        else{
+            std::string errorMessage = "no such conditional move " + operation + " exists";
+            for(char c : errorMessage){
+                output.data.push_back(c);
+                output.type = AssemblerLine::type_invalid;
+                return output;
+            }
+        }
+
+		// try for segment registers
+		uint8_t segmentSourceIndex = getSegmentRegisterIndex(splitLine[2]);
+		uint8_t segmentDestIndex = getSegmentRegisterIndex(splitLine[1]);
+
+		if((segmentSourceIndex != 7) || (segmentDestIndex != 7)){
+            // disallow segment registers
+			std::string errorMessage = "cmovcc not supported to or from segment registers";
+            for(char c : errorMessage){
+                output.data.push_back(c);
+            }
+
+            output.type = AssemblerLine::type_invalid;
+
+            return output;
+		}
+		// neither are segment registers, try for regular move
+
+		if(destinationInformation && sourceInformation){ // mov r64, r64
+			return registerToRegister(output, sourceInformation, destinationInformation, sourceLine, operation, opcode);
+		}
+
+		output.type = AssemblerLine::type_invalid;
+		std::string errorMessage = "cmovcc only supported where destination is {register} and source is {register}";
+
+		for(char c : errorMessage){
+			output.data.push_back(c);
+		}
+
+		return output;
 	}
     else{ // no such operation
 		std::string errorMessage = "no such operation \"";

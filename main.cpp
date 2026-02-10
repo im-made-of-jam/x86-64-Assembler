@@ -20,6 +20,7 @@ int main(){
 			std::cout << "Invalid directive: '" << std::string(a.contents) << "'" << std::endl;
 		}
         else if(a.type == tasm::AssemblerLine::type_invalid){
+            std::cout << "INVALID: ";
             std::cout << std::string{a.data.begin(), a.data.end()} << std::endl;
         }
         else if(a.type == tasm::AssemblerLine::type_directive){

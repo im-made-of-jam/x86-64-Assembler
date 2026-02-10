@@ -1,5 +1,3 @@
-test rax r9
-test r15d r10d
-test r12w ax
-test esp esp
-test sp sp
+cmovno rax r9
+cmovnae r9d ebp
+cmovng  ax r15w

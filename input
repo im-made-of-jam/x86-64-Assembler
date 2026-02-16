@@ -1,2 +1,9 @@
-pop rax
-mov rbx 0
+nop
+nop1
+nop2
+nop4
+nop8
+
+mov rdi 420
+mov rax 60
+syscall

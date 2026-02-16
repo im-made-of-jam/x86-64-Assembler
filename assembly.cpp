@@ -949,6 +949,37 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		output.data.push_back(0xF4);
 		return output;
 	}
+    else if(operation == "nop"){
+		output.data.push_back(0x90);
+		return output;
+	}
+    else if(operation == "nop1"){
+		output.data.push_back(0x90);
+		return output;
+	}
+    else if(operation == "nop2"){
+		output.data.push_back(0x66);
+		output.data.push_back(0x90);
+		return output;
+	}
+    else if(operation == "nop4"){
+		output.data.push_back(0x0f);
+		output.data.push_back(0x1f);
+		output.data.push_back(0x40);
+		output.data.push_back(0x00);
+		return output;
+	}
+    else if(operation == "nop8"){
+        output.data.push_back(0x0f);
+        output.data.push_back(0x1f);
+        output.data.push_back(0x84);
+        output.data.push_back(0x00);
+        output.data.push_back(0x00);
+        output.data.push_back(0x00);
+        output.data.push_back(0x00);
+        output.data.push_back(0x00);
+        return output;
+    }
     else if(operation == "leave"){
 		output.data.push_back(0xC9);
 		return output;

@@ -1004,7 +1004,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x85});
 		}
 	}
-    else if(operation.size() >= 4 && operation.substr(0, 4) == "cmov"){
+    else if(operation.size() >= 4 && operation.substr(0, 4) == "cmov"){ // all of the CMOVcc family
         if(operation.size() == 4){
             output.type = AssemblerLine::type_invalid;
 
@@ -1141,6 +1141,16 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	}
 
     // this *should* be unreachable
+    std::cout << "=======================================" << std::endl;
+    std::cout << "=======================================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Reached what should be unreachable at the end of assembleOneInstruction" << std::endl;
+    std::cout << "on source line: " << sourceLine    << std::endl;
+    std::cout << "with input: \""   << input << "\"" << std::endl;
+    std::cout << "data size: "      << destDataSize  << std::endl;
+    std::cout << std::endl;
+    std::cout << "=======================================" << std::endl;
+    std::cout << "=======================================" << std::endl;
     return output;
 }
 

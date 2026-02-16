@@ -4,9 +4,4 @@
 pe.py
 testing.cpp
 testing.exe
-z_pe.py
-z_elf.py
-z_testelf
-z_elf.asm
-z_elfHeader
-z_outputElf
+z_*

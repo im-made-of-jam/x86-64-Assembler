@@ -1,3 +1,2 @@
-cmovno rax r9
-cmovnae r9d ebp
-cmovng  ax r15w
+pop rax
+mov rbx 0

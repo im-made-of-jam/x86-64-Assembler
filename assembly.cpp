@@ -350,6 +350,12 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		std
 		sti
 
+        nop
+        nop1
+        nop2
+        nop4
+        nop8
+
         callr r
 		ret
         leave

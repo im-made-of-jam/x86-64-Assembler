@@ -83,4 +83,4 @@ if (__name__ == "__main__"):
 			pool.map(gccCompile, filesToCompile)
 
 	print("compiling object files")
-	os.system("""powershell "Invoke-Expression 'g++ ./.objectFiles/*.o -o ./main' """)
+	os.system("""powershell "Invoke-Expression 'g++ ./.objectFiles/*.o -o ./tasm' """)

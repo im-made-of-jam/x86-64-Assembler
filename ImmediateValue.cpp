@@ -6,7 +6,7 @@
 
 namespace tasm{
 
-ImmediateValue getImmediate(std::string numberToGet){
+ImmediateValue getImmediate(std::string numberToGet, bool is64Bit){
 	uint64_t rawValue;
 	uint64_t unused;
 
@@ -17,6 +17,11 @@ ImmediateValue getImmediate(std::string numberToGet){
 		numberToGet = numberToGet.substr(2);
 		try{
 			rawValue = std::stoull(numberToGet, &unused, 16);
+            if(!is64Bit){
+                if(rawValue > 0xFFFFFFFFull){
+                    throw std::invalid_argument("");
+                }
+            }
 		}
 		catch(std::invalid_argument ia){
 			returnThis.type = ImmediateValue::type_invalid;

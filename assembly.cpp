@@ -356,6 +356,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
         nop4
         nop8
 
+        jmpabs
+
         callr r
 		ret
         leave
@@ -1034,12 +1036,37 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
+    else if(operation == "callrel"){ // call imm32 offset
+        errorOnLessThanOne("callrel");
+        ImmediateValue imm = getImmediate(arg1, false);
+        for(uint8_t byte : imm.value){
+            std::cout << std::hex << 0ull + byte << std::dec << std::endl;
+        }
+        output.type == AssemblerLine::type_invalid;
+        return output;
+    }
     else if(operation == "test"){  // test r64, r64
 		output = errorOnLessThanTwo(operation);
 
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x85});
 		}
+	}
+    else if(operation == "jmpabs"){  // jmpabs r64
+		errorOnLessThanOne("jmpabs");
+
+		if(output.type == AssemblerLine::type_invalid){
+			return output;
+		}
+
+		if(destDataSize == 1){
+			output.data.push_back(0x66);
+		}
+
+		output.data.push_back(0xFF);
+		output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), 4));
+
+		return output;
 	}
     else if(operation.size() >= 4 && operation.substr(0, 4) == "cmov"){ // all of the CMOVcc family
         if(operation.size() == 4){

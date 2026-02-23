@@ -19,6 +19,6 @@ struct ImmediateValue{
 	std::string message;
 };
 
-ImmediateValue getImmediate(std::string);
+ImmediateValue getImmediate(std::string, bool = true);
 
 }; // namespace tasm

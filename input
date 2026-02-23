@@ -1,9 +1,5 @@
-nop
-nop1
-nop2
-nop4
-nop8
-
-mov rdi 420
-mov rax 60
-syscall
+mov r15 0x7fffffffffffffff
+mov r14 0xffff
+mov rax 15
+sub rax rbx
+cmovz rax r14

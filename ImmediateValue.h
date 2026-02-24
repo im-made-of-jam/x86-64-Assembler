@@ -9,12 +9,13 @@ namespace tasm{
 struct ImmediateValue{
 	enum {
 		type_valid             = 0,
-		type_outOfRange        = 1 << 0,
-		type_invalid           = 1 << 1,
-        type_label_replacement = 1 << 2
+		type_invalid           = 1 << 0,
+        type_label_replacement = 1 << 1
 	};
 
 	uint64_t type;
+
+    bool needsPatching = false;
 
 	std::vector<uint8_t> value;
 	std::string message;

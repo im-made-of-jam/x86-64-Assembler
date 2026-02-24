@@ -614,12 +614,13 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && (!sourceInformation)){ // mov r64, imm64
 			// main bytes plus prefixes
 			AssemblerLine instruction = oneByteOnly({0xB8}, operation, (destDataSize == 3));
-            instruction.needsPatching = true;
 
 			// extra bytes added on at the end
 			ImmediateValue imm = getImmediate(arg2);
 
-			if(imm.type != ImmediateValue::type_valid){
+            instruction.needsPatching = imm.needsPatching;
+
+			if(imm.type == ImmediateValue::type_invalid){
 				instruction.type = AssemblerLine::type_invalid;
 				std::string errorMessage = "invalid value for immediate in mov. line ";
 				errorMessage.append(std::to_string(sourceLine));
@@ -1066,6 +1067,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
         errorOnLessThanOne("callrel");
 
         ImmediateValue imm = getImmediate(arg1, false);
+
+        output.needsPatching = imm.needsPatching;
 
         imm.value = padDataToSize(2, imm.value);
 

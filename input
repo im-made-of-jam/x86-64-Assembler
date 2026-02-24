@@ -1,5 +1,1 @@
-callrel %here
-pop rbp
-mov eax 5
-sub rbp rax
-here:
+mov rax %thing

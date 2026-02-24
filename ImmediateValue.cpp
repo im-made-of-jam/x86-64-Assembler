@@ -14,6 +14,7 @@ ImmediateValue getImmediate(std::string numberToGet, bool is64Bit){
 
     if(numberToGet.size() >= 1 && numberToGet.at(0) == '%'){
         returnThis.type = ImmediateValue::type_label_replacement;
+        returnThis.needsPatching = true;
         return returnThis;
     }
 
@@ -32,7 +33,7 @@ ImmediateValue getImmediate(std::string numberToGet, bool is64Bit){
 			returnThis.type = ImmediateValue::type_invalid;
 		}
 		catch(std::out_of_range oor){
-			returnThis.type = ImmediateValue::type_outOfRange;
+			returnThis.type = ImmediateValue::type_invalid;
 		}
 
 		while(rawValue != 0){
@@ -49,7 +50,7 @@ ImmediateValue getImmediate(std::string numberToGet, bool is64Bit){
 			returnThis.type = ImmediateValue::type_invalid;
 		}
 		catch(std::out_of_range oor){
-			returnThis.type = ImmediateValue::type_outOfRange;
+			returnThis.type = ImmediateValue::type_invalid;
 		}
 
 		while(rawValue != 0){

@@ -10,7 +10,12 @@ ImmediateValue getImmediate(std::string numberToGet, bool is64Bit){
 	uint64_t rawValue;
 	uint64_t unused;
 
-	ImmediateValue returnThis{.type = ImmediateValue::type_valid};
+    ImmediateValue returnThis{.type = ImmediateValue::type_valid};
+
+    if(numberToGet.size() >= 1 && numberToGet.at(0) == '%'){
+        returnThis.type = ImmediateValue::type_label_replacement;
+        return returnThis;
+    }
 
 	if((numberToGet.size() >= 2) && ((numberToGet[1] == 'x') or (numberToGet[1] == 'X'))){
 		// hex string

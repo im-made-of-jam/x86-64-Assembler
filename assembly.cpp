@@ -330,14 +330,14 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		sub r/r
 		pop r
 		push r
-		inc
-		dec
-		div
-		idiv
-		mul
-		imul
-		shl
-		shr
+		inc r
+		dec r
+		div r
+		idiv r
+		mul r
+		imul r
+		shl r/1
+		shr r/1
 
         and r/r
 
@@ -356,14 +356,16 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
         nop4
         nop8
 
-        jmpabs
+        jmpabs r64
 
-        callr r
 		ret
         leave
 		syscall
 		sysret
 		hlt
+        callr r
+        callrel imm32
+            callrel will support using labels as an offset, HOWEVER the label name must be a-zA-Z, and in callrel it must be prepended with % to signify its a label
 
 		cpuid
 		lock
@@ -408,6 +410,20 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 	if(splitLine.size() == 1){
 		// one element on the line, check for label
 		if(input.at(input.size() - 1) == ':'){
+            for(uint64_t i = 0; i < input.size() - 1; ++i){
+                if('a' <= input.at(i) && input.at(i) <= 'z'){
+                    continue;
+                }
+
+                if('A' <= input.at(i) && input.at(i) <= 'Z'){
+                    continue;
+                }
+
+                std::cout << "invalid label" << std::endl;
+                output.type = AssemblerLine::type_invalid;
+                return output;
+            }
+            std::cout << "valid label" << std::endl;
 			output.type = AssemblerLine::type_label;
 			return output;
 		}
@@ -738,6 +754,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
             }
 
             output.type = AssemblerLine::type_invalid;
+
             return output;
         }
 	}
@@ -1219,7 +1236,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		return output;
 	}
 
-    // this *should* be unreachable 
+    // this *should* be unreachable
     std::cout << "=======================================" << std::endl;
     std::cout << "=======================================" << std::endl;
     std::cout << std::endl;

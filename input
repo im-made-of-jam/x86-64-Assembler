@@ -1,3 +1,5 @@
-callrel 0x7FFFFFFF
-pop r15
-sub r15 5
+callrel %here
+pop rbp
+mov eax 5
+sub rbp rax
+here:

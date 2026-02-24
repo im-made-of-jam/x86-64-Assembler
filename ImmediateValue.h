@@ -8,9 +8,10 @@ namespace tasm{
 
 struct ImmediateValue{
 	enum {
-		type_valid      = 0,
-		type_outOfRange = 1 << 0,
-		type_invalid    = 1 << 1
+		type_valid             = 0,
+		type_outOfRange        = 1 << 0,
+		type_invalid           = 1 << 1,
+        type_label_replacement = 1 << 2
 	};
 
 	uint64_t type;

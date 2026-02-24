@@ -1036,13 +1036,19 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		return output;
 	}
-    else if(operation == "callrel"){ // call imm32 offset
+    else if(operation == "callrel"){ // call imm32 offset. the offset is relative to the end of the instruction, despite what documentaion says. next instruction has offset 0
         errorOnLessThanOne("callrel");
+
         ImmediateValue imm = getImmediate(arg1, false);
-        for(uint8_t byte : imm.value){
-            std::cout << std::hex << 0ull + byte << std::dec << std::endl;
+
+        imm.value = padDataToSize(2, imm.value);
+
+        output.data.push_back(0xE8);
+
+        for(uint64_t i = imm.value.size(); i != 0; --i){
+            output.data.push_back(imm.value[i - 1]);
         }
-        output.type == AssemblerLine::type_invalid;
+
         return output;
     }
     else if(operation == "test"){  // test r64, r64
@@ -1204,7 +1210,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		return output;
 	}
 
-    // this *should* be unreachable
+    // this *should* be unreachable 
     std::cout << "=======================================" << std::endl;
     std::cout << "=======================================" << std::endl;
     std::cout << std::endl;

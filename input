@@ -1,5 +1,2 @@
-mov r15 0x7fffffffffffffff
-mov r14 0xffff
-mov rax 15
-sub rax rbx
-cmovz rax r14
+callrel 0
+pop r15

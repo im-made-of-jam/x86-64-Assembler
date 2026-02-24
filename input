@@ -1,1 +1,1 @@
-mov rax %thing
+mov al 1

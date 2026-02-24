@@ -615,6 +615,16 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			// main bytes plus prefixes
 			AssemblerLine instruction = oneByteOnly({0xB8}, operation, (destDataSize == 3));
 
+            if(destDataSize == 0){
+                std::string errorMessage = "mov r8/imm8 not supported";
+                instruction.data.resize(0);
+                for(char c : errorMessage){
+                    instruction.data.push_back(c);
+                }
+                instruction.type = AssemblerLine::type_invalid;
+                return instruction;
+            }
+
 			// extra bytes added on at the end
 			ImmediateValue imm = getImmediate(arg2);
 

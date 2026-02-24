@@ -1,2 +1,3 @@
-callrel 0
+callrel 0x7FFFFFFF
 pop r15
+sub r15 5

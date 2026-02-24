@@ -731,6 +731,15 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x29});
 		}
+        else{
+            std::string errorMessage = "sub only supported with two registers (r/r), not memory or immediates";
+            for(char c : errorMessage){
+                output.data.push_back(c);
+            }
+
+            output.type = AssemblerLine::type_invalid;
+            return output;
+        }
 	}
 	else if(operation == "lock"){ //             yes this is a prefix dont mind it being here
 		output.data.push_back(0xF0);
@@ -1045,7 +1054,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
         output.data.push_back(0xE8);
 
-        for(uint64_t i = imm.value.size(); i != 0; --i){
+        for(uint64_t i = ((imm.value.size() > 4) ? 4 : imm.value.size()); i != 0; --i){
             output.data.push_back(imm.value[i - 1]);
         }
 

@@ -638,8 +638,10 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 				instruction.data.clear();
 
 				for(char c : errorMessage){
-					instruction.data.push_back(c);
+                    instruction.data.push_back(c);
 				}
+
+                return instruction;
 			}
 
 			if(isDataTooBig(destDataSize, imm.value)){
@@ -1264,7 +1266,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 }
 
 AssemblerLine assembleOneInstruction(std::string input){
-	return assembleOneInstruction(input, 0);
+	return assembleOneInstruction(input, 0ull);
 }
 
 }; // namespace tasm

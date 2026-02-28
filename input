@@ -1,1 +1,1 @@
-mov al 1
+mov rax fish

@@ -21,7 +21,10 @@ int main(){
 		}
         else if(a.type == tasm::AssemblerLine::type_invalid){
             std::cout << "INVALID: ";
-            std::cout << std::string{a.data.begin(), a.data.end()} << std::endl;
+            for(char c : a.data){
+                std::cout << c;
+            }
+            std::cout << std::endl;
         }
         else if(a.type == tasm::AssemblerLine::type_directive){
             switch(a.data[a.data.size() - 1]){

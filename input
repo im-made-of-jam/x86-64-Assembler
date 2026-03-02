@@ -1,1 +1,17 @@
-mov rax fish
+entry:
+getKernelBaseAddress:
+tebfinder
+mov rsi rax
+mov rbx 0x18
+add rax rbx
+mov* rax rax
+mov rbx 0x20
+add rax rbx
+mov* rsi rax
+lodsq
+xchg rax rsi
+lodsq
+mov rbx 0x20
+add rax rbx
+mov* rax rax
+; rax = (void*)Kernel32Base

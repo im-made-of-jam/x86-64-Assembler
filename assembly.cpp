@@ -732,6 +732,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x87});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "xchg only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
 	}
 	else if(operation == "xor"){  // xor r64, r64
 		output = errorOnLessThanTwo(operation);
@@ -739,6 +751,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x33});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "xor only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
 	}
 	else if(operation == "add"){  // add r64, r64
 		output = errorOnLessThanTwo(operation);
@@ -746,6 +770,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x01});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "add only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
 	}
 	else if(operation == "adc"){  // add r64, r64
 		output = errorOnLessThanTwo(operation);
@@ -753,6 +789,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x11});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "adc only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
 	}
 	else if(operation == "sub"){  // sub r64, r64
 		output = errorOnLessThanTwo(operation);
@@ -991,6 +1039,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		output.data.push_back(getREXByte(true, false, false, false));
 		output.data.push_back(0x0F);
 		output.data.push_back(0x07);
+        return output;
 	}
 	else if(operation == "hlt"){
 		output.data.push_back(0xF4);
@@ -1058,6 +1107,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x21});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "and only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
     }
 	else if(operation == "callr"){  // call r64
 		errorOnLessThanOne("callr");
@@ -1098,6 +1159,18 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		if(destinationInformation && sourceInformation){
 			return registerToRegister(output, destinationInformation, sourceInformation, sourceLine, operation, {0x85});
 		}
+
+        output.type = AssemblerLine::type_invalid;
+
+        std::string errorMessage = "test only supported with r/r";
+
+        output.data.clear();
+
+        for(char c : errorMessage){
+            output.data.push_back(c);
+        }
+
+        return output;
 	}
     else if(operation == "jmpabs"){  // jmpabs r64
 		errorOnLessThanOne("jmpabs");

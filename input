@@ -1,1 +1,2 @@
-add rip rip
+mov rax 0x33
+mov cs rbx

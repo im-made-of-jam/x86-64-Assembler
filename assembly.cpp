@@ -694,12 +694,26 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return output;
 		}
 
+        // when this is specifically 4, which corresponds to sp of any size, it indicated the existance of a SIB byte
+        // as such, for now this will not be implemented
+        if((sourceInformation & registerInformationIndexMask) == 4){
+            output.data.clear();
+            output.type = AssemblerLine::type_invalid;
+
+            std::string errorMessage = "mov* r/sp with any width is currently not supported";
+
+            for(char c : errorMessage){
+                output.data.push_back(c);
+            }
+
+            return output;
+        }
+
 		bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
 		bool srcIsExtended = ((sourceInformation & registerInformationExtendedMask) >> 3) == true;
 		output.data.push_back(getREXByte(true, destIsExtended, false, srcIsExtended));
 		output.data.push_back(0x8B);
 		output.data.push_back(getModRMByteIndirect(true, true, (sourceInformation & registerInformationIndexMask), (destinationInformation & registerInformationIndexMask)));
-
 		return output;
 	}
 	else if(operation == "*mov"){ // mov [r64], r64
@@ -1324,7 +1338,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		return output;
 	}
 
-    // this *should* be unreachable
+    // this *should* be unreachable, assuming everything works
     std::cout << "=======================================" << std::endl;
     std::cout << "=======================================" << std::endl;
     std::cout << std::endl;

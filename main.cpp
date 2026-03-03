@@ -13,14 +13,17 @@
 int main(){
     std::vector<uint8_t> combinedData;
 
-	for(std::string line : tasm::getFileLines("./input")){
-		tasm::AssemblerLine a = tasm::assembleOneInstruction(line);
+    std::vector<std::string> allLines = tasm::getFileLines("./input");
+
+	for(uint64_t i = 0; i < allLines.size(); ++i){
+        std::string line = allLines[i];
+		tasm::AssemblerLine a = tasm::assembleOneInstruction(line, i);
 
 		if(a.type == tasm::AssemblerLine::type_invalid_directive){
 			std::cout << "Invalid directive: '" << std::string(a.contents) << "'" << std::endl;
 		}
         else if(a.type == tasm::AssemblerLine::type_invalid){
-            std::cout << "INVALID: ";
+            std::cout << "invalid on line " << (i + 1) << ": ";
             for(char c : a.data){
                 std::cout << c;
             }

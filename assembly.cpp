@@ -745,7 +745,7 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 
 		bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
 		bool srcIsExtended = ((sourceInformation & registerInformationExtendedMask) >> 3) == true;
-		output.data.push_back(getREXByte(true, destIsExtended, false, srcIsExtended));
+		output.data.push_back(getREXByte(true, srcIsExtended, false, destIsExtended));
 		output.data.push_back(0x89);
 		output.data.push_back(getModRMByteIndirect(true, true, (destinationInformation & registerInformationIndexMask), (sourceInformation & registerInformationIndexMask)));
 

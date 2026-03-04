@@ -442,7 +442,8 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
         return output;
     }
 
-	uint64_t destDataSize = (destinationInformation & registerInformationSizeMask) >> 6;
+	uint64_t destDataSize   = (destinationInformation & registerInformationSizeMask) >> 6;
+	uint64_t sourceDataSize = (sourceInformation      & registerInformationSizeMask) >> 6;
 
 	// error if there are no operands
 	auto errorOnLessThanOne = [&](std::string name){
@@ -574,10 +575,15 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 		uint8_t segmentDestIndex = getSegmentRegisterIndex(splitLine[1]);
 
 		if((segmentSourceIndex != 7) != (segmentDestIndex != 7)){
-			// one is a segment register, the other is no
+			// one is a segment register, the other is not
 			if(segmentDestIndex == 7){
 				// destination is NOT a segment register
-				output.data.push_back(getREXByte(true, false, false, ((destinationInformation & registerInformationExtendedMask) != 0)));
+                if(destDataSize == 1){
+                    output.data.push_back(0x66);
+                }
+                if((destinationInformation & registerInformationExtendedMask) || (destDataSize == 3)){
+                    output.data.push_back(getREXByte((destDataSize == 3), false, false, ((destinationInformation & registerInformationExtendedMask))));
+                }
 				output.data.push_back(0x8C);
 				output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), segmentSourceIndex));
 
@@ -585,9 +591,14 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			}
 			else{
 				// source is NOT a segment register
-				output.data.push_back(getREXByte(true, false, false, ((destinationInformation & registerInformationExtendedMask) != 0)));
+                if(sourceDataSize == 1){
+                    output.data.push_back(0x66);
+                }
+                if((sourceInformation & registerInformationExtendedMask) || (sourceDataSize == 3)){
+                    output.data.push_back(getREXByte((sourceDataSize == 3), false, false, ((sourceInformation & registerInformationExtendedMask))));
+                }
 				output.data.push_back(0x8E);
-				output.data.push_back(getModRMByteNoIndirect((destinationInformation & registerInformationIndexMask), segmentSourceIndex));
+				output.data.push_back(getModRMByteNoIndirect((sourceInformation & registerInformationIndexMask), segmentDestIndex));
 
 				return output;
 			}

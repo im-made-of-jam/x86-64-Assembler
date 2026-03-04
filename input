@@ -1,2 +1,2 @@
-mov rax 0x33
-mov cs rbx
+mov r15w cs
+mov cs r15w

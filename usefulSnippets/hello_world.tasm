@@ -1,40 +1,45 @@
 callrel %base
 base:
-nop8
+nop8 ; this nop is a placeholder for what will eventually be data to be printed
 pop r15
 ; r15 = &base
 
-mov rdi r15
+
+; the following block gets whatever address %base is at, rounds down to the preceding page boundary, and then
+;    sets both that and the next page to be readable, writable, and executable
+mov rdi r15  ; use rdi because the mprotect syscall will eventually use that register anyways
 xor r13 r13
 mov r12 4096
-sub r13 r12
-and rdi r13
+sub r13 r12  ; this now holds -4096, which looks like all of the bits being one, except for the bits in charge of the address within a page
+and rdi r13  ; this gets rid of the offset into a page, so now rdi shoul dbe on the page boundary before %base
 ; rdi = start
-mov rsi 8192
-mov rdx 7
-mov rax 10
+mov rsi 8192 ; this is how many bytes we want to change the protection of, equal to two pages
+mov rdx 7    ; this is equivalent to (PROT_WRITE | PROT_READ | PROT_EXEC)
+mov rax 10   ; syscall number for mprotect
 syscall
-; 8192 bytes are now (read | write | exec)
+; 8192 bytes are now (read | write | exec), starting at start of the page containing %base
 
+
+; now we can copy bytes of data into that nop from earlier
 mov rbx 0x6c6c6548 ; "lleH"
 *mov r15 rbx
 
-mov ecx 3
-
+; edi holds the file descriptor of where to write to. fd = 1 means stdout
+; we do it this seemingly convoluted way because it takes less bytes in the final executable than 'mov edx, 1'
 xor edi edi
 inc edi
-; edi = 1
+; rsi holds a pointer to the buffer we are copying to stdout, in this case, the address of what used to be that nop8
 mov rsi r15
-xor edx edx
-inc edx
-inc edx
-inc edx
-inc edx
+; edx holds the length of the buffer we are going to print
+mov edx 4
+; and eax holds the syscall number, 1 for the write syscall
 mov eax 1
 syscall
 
+; we can copy more data to print into the same location
 mov rbx 0x77202c6f ; "w ,o"
 *mov r15 rbx
+; rax gets overwritten with the return value of the previous syscall so we must set it to one again. other registers are unaffected
 mov eax 1
 syscall
 
@@ -46,10 +51,12 @@ syscall
 mov rbx 0x00000a21 ;  "\0\0\n!"
 *mov r15 rbx
 mov eax 1
+; this time we are printing less data, so we decrement edx to indicate this to the OS
 dec edx
 dec edx
 syscall
 
+; 60 is the syscall number for exit
 mov rax 60
-mov rdi r13
+xor rdi rdi
 syscall

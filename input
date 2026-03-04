@@ -13,15 +13,15 @@ mov r12 4096
 sub r13 r12  ; this now holds -4096, which looks like all of the bits being one, except for the bits in charge of the address within a page
 and rdi r13  ; this gets rid of the offset into a page, so now rdi shoul dbe on the page boundary before %base
 ; rdi = start
-mov rsi 8192 ; this is how many bytes we want to change the protection of, equal to two pages
-mov rdx 7    ; this is equivalent to (PROT_WRITE | PROT_READ | PROT_EXEC)
-mov rax 10   ; syscall number for mprotect
+mov esi 8192 ; this is how many bytes we want to change the protection of, equal to two pages
+mov edx 7    ; this is equivalent to (PROT_WRITE | PROT_READ | PROT_EXEC)
+mov eax 10   ; syscall number for mprotect
 syscall
 ; 8192 bytes are now (read | write | exec), starting at start of the page containing %base
 
 
 ; now we can copy bytes of data into that nop from earlier
-mov rbx 0x6c6c6548 ; "lleH"
+mov ebx 0x6c6c6548 ; "lleH"
 *mov r15 rbx
 
 ; edi holds the file descriptor of where to write to. fd = 1 means stdout
@@ -37,18 +37,18 @@ mov eax 1
 syscall
 
 ; we can copy more data to print into the same location
-mov rbx 0x77202c6f ; "w ,o"
+mov ebx 0x77202c6f ; "w ,o"
 *mov r15 rbx
 ; rax gets overwritten with the return value of the previous syscall so we must set it to one again. other registers are unaffected
 mov eax 1
 syscall
 
-mov rbx 0x646c726f ; "dlro"
+mov ebx 0x646c726f ; "dlro"
 *mov r15 rbx
 mov eax 1
 syscall
 
-mov rbx 0x00000a21 ;  "\0\0\n!"
+mov ebx 0x00000a21 ;  "\0\0\n!"
 *mov r15 rbx
 mov eax 1
 ; this time we are printing less data, so we decrement edx to indicate this to the OS
@@ -57,7 +57,7 @@ dec edx
 syscall
 
 ; 60 is the syscall number for exit
-mov rax 60
+mov eax 60
 ; rdi holds the exit code. an exit code of 0 indicates successful execution
-xor rdi rdi
+xor edi edi
 syscall

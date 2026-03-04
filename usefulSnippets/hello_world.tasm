@@ -10,7 +10,7 @@ mov r12 4096
 sub r13 r12
 and rdi r13
 ; rdi = start
-mov rsi 4096
+mov rsi 8192
 mov rdx 7
 mov rax 10
 syscall

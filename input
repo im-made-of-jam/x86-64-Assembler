@@ -8,10 +8,10 @@ pop r15
 ; the following block gets whatever address %base is at, rounds down to the preceding page boundary, and then
 ;    sets both that and the next page to be readable, writable, and executable
 mov rdi r15  ; use rdi because the mprotect syscall will eventually use that register anyways
-xor r13 r13
-mov r12 4096
-sub r13 r12  ; this now holds -4096, which looks like all of the bits being one, except for the bits in charge of the address within a page
-and rdi r13  ; this gets rid of the offset into a page, so now rdi shoul dbe on the page boundary before %base
+xor ecx ecx
+mov esi 4096
+sub rcx rsi  ; this now holds -4096, which looks like all of the bits being one, except for the bits in charge of the address within a page
+and rdi rcx  ; this gets rid of the offset into a page, so now rdi shoul dbe on the page boundary before %base
 ; rdi = start
 mov esi 8192 ; this is how many bytes we want to change the protection of, equal to two pages
 mov edx 7    ; this is equivalent to (PROT_WRITE | PROT_READ | PROT_EXEC)

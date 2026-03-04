@@ -12,7 +12,7 @@ xor ecx ecx
 mov esi 4096
 sub rcx rsi  ; this now holds -4096, which looks like all of the bits being one, except for the bits in charge of the address within a page
 and rdi rcx  ; this gets rid of the offset into a page, so now rdi shoul dbe on the page boundary before %base
-; rdi = start
+; rdi = start of area to mark as writable
 mov esi 8192 ; this is how many bytes we want to change the protection of, equal to two pages
 mov edx 7    ; this is equivalent to (PROT_WRITE | PROT_READ | PROT_EXEC)
 mov eax 10   ; syscall number for mprotect

@@ -6,7 +6,7 @@
 #include <fstream>
 
 #include "fileOps.h"
-#include "firstPass.h"
+#include "passes.h"
 #include "assembly.h"
 #include "directives.h"
 

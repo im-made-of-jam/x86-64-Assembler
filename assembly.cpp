@@ -705,13 +705,15 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return output;
 		}
 
-        // when this is specifically 4, which corresponds to sp of any size, it indicated the existance of a SIB byte
-        // as such, for now this will not be implemented
+        // when Mod of ModR/M is not 0b11, and this is specifically 4, which corresponds to sp of any size (or r12 with REX.B),
+        //    it actually indicates the existance of a SIB byte to be used with the current instruction
+        // as such, this will not be implemented for now
+        // could bodge it for now, but will do it properly at some point
         if((sourceInformation & registerInformationIndexMask) == 4){
             output.data.clear();
             output.type = AssemblerLine::type_invalid;
 
-            std::string errorMessage = "mov* r/sp with any width is currently not supported";
+            std::string errorMessage = "mov* r / (sp or r12) with any width is currently not supported";
 
             for(char c : errorMessage){
                 output.data.push_back(c);
@@ -720,8 +722,20 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
             return output;
         }
 
-		bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
+        bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
 		bool srcIsExtended = ((sourceInformation & registerInformationExtendedMask) >> 3) == true;
+
+        // this is for bp of any size. the bp encoding within the ModR/M byte when Mod is 0b00 gets used for indicating a
+        //    32 bit displacement, or rip-relative addressing, depending on which mode the cpu is in.
+        // it does not require a SIB byte, but it does require slightly different encoding, with at least an 8 bit displacement, even if it is just 0
+        if((sourceInformation & registerInformationIndexMask) == 5){
+            output.data.push_back(getREXByte(true, destIsExtended, false, srcIsExtended));
+            output.data.push_back(0x8B);
+            output.data.push_back(getModRMByteIndirect(true, false, (sourceInformation & registerInformationIndexMask), (destinationInformation & registerInformationIndexMask)));
+            output.data.push_back(0x00); // this is the displacement. its zero because its unused, but its still required
+            return output;
+        }
+
 		output.data.push_back(getREXByte(true, destIsExtended, false, srcIsExtended));
 		output.data.push_back(0x8B);
 		output.data.push_back(getModRMByteIndirect(true, true, (sourceInformation & registerInformationIndexMask), (destinationInformation & registerInformationIndexMask)));
@@ -743,8 +757,32 @@ AssemblerLine assembleOneInstruction(std::string input, uint64_t sourceLine){
 			return output;
 		}
 
-		bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
-		bool srcIsExtended = ((sourceInformation & registerInformationExtendedMask) >> 3) == true;
+        // see mov*
+        if((destinationInformation & registerInformationIndexMask) == 4){
+            output.data.clear();
+            output.type = AssemblerLine::type_invalid;
+
+            std::string errorMessage = "*mov r / (sp or r12) with any width is currently not supported";
+
+            for(char c : errorMessage){
+                output.data.push_back(c);
+            }
+
+            return output;
+        }
+
+        bool destIsExtended = ((destinationInformation & registerInformationExtendedMask) >> 3) == true;
+        bool srcIsExtended = ((sourceInformation & registerInformationExtendedMask) >> 3) == true;
+
+        // again, see mov*
+        if((destinationInformation & registerInformationIndexMask) == 5){
+            output.data.push_back(getREXByte(true, srcIsExtended, false, destIsExtended));
+            output.data.push_back(0x89);
+            output.data.push_back(getModRMByteIndirect(true, false, (destinationInformation & registerInformationIndexMask), (sourceInformation & registerInformationIndexMask)));
+            output.data.push_back(0x00);
+            return output;
+        }
+
 		output.data.push_back(getREXByte(true, srcIsExtended, false, destIsExtended));
 		output.data.push_back(0x89);
 		output.data.push_back(getModRMByteIndirect(true, true, (destinationInformation & registerInformationIndexMask), (sourceInformation & registerInformationIndexMask)));

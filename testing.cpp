@@ -31,5 +31,5 @@ int main(){
 
     void* kernel32Base = reinterpret_cast<void*>(rbx);
 
-    reinterpret_cast<void(*)(uint32_t)>(rbx + 268448)(60);
+    reinterpret_cast<__stdcall void(*)(uint32_t)>(rbx + 268448)(69);
 }

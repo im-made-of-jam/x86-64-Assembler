@@ -1,4 +1,4 @@
-#include "firstPass.h"
+#include "passes.h"
 #include "fileOps.h"
 
 #include "AssemblerLine.h"

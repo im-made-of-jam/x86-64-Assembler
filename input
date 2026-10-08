@@ -1,3 +1,4 @@
 mov eax 60
 xor rdi rdi
+xor rsi rsi
 syscall

@@ -22,4 +22,15 @@ std::vector<AssemblerLine> firstPass(const std::vector<std::string>& inputLines)
 	return output;
 }
 
+std::vector<AssemblerLine> secondPass(const std::vector<AssemblerLine>& inputLines){
+    std::vector<AssemblerLine> output;
+
+    for(AssemblerLine line : inputLines){
+        // modify the line here
+        output.push_back(line);
+    }
+
+    return output;
+}
+
 }; // namespace tasm

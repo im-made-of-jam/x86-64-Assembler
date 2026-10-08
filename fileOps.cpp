@@ -100,49 +100,78 @@ void writeElf(std::string outputFilename, std::vector<uint8_t> textSection){
         }
     };
 
+    auto makeLittleEndian = [&](uint64_t word){
+        std::vector<uint8_t> bytes;
+
+        for(uint64_t i = 0; i < 8; ++i){
+            bytes.push_back(word & 0xFF);
+            word >>= 8;
+        }
+
+        return bytes;
+    };
+
     // main elf header
-    writeVec({0x7F, 'E', 'L', 'F'});       // magic number
-    write(0x02);                           // bitness
-    write(0x01);                           // endianess
-    write(0x01);                           // ELF header version
-    write(0x00);                           // OS ABI version
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // padding
-    writeVec({0x02, 0x00});                // ELF type
-    writeVec({0x3E, 0x00});                // instruction set
-    writeVec({0x01, 0, 0, 0});             // ELF version
-    writeVec({0xC0, 0, 0, 0, 0, 0, 0, 0}); // program entry offset
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // program header table offset
-    writeVec({0x80, 0, 0, 0, 0, 0, 0, 0}); // section header table offset
-    writeVec({0, 0, 0, 0});                // flags
-    writeVec({64,   0});                   // ELF header size
-    writeVec({64,   0});                   // size of program header table entry
-    writeVec({1,    0});                   // number of program header table entries
-    writeVec({64,   0});                   // size of section header table entry
-    writeVec({2,    0});                   // number of entries in the section header table
-    writeVec({0x00, 0x00});                // index of .shstrtab in the section header table
+    writeVec({0x7F, 'E', 'L', 'F'});             // magic number
+    write(0x02);                                 // bitness
+    write(0x01);                                 // endianess
+    write(0x01);                                 // ELF header version
+    writeVec({0x00, 0x00});                      // OS ABI version
+    writeVec({0, 0, 0, 0, 0, 0, 0});             // padding
+    writeVec({0x02, 0x00});                      // ELF type
+    writeVec({0x3E, 0x00});                      // instruction set
+    writeVec({0x01, 0, 0, 0});                   // ELF version
+    writeVec({0x40, 0x01, 0x02, 0, 0, 0, 0, 0}); // program entry offset (131072)
+    writeVec({0x40, 0, 0, 0, 0, 0, 0, 0});       // program header table offset
+    writeVec({0x80, 0, 0, 0, 0, 0, 0, 0});       // section header table offset
+    writeVec({0, 0, 0, 0});                      // flags
+    writeVec({64,   0});                         // ELF header size
+    writeVec({56,   0});                         // size of program header table entry
+    writeVec({1,    0});                         // number of program header table entries
+    writeVec({64,   0});                         // size of section header table entry
+    writeVec({2,    0});                         // number of entries in the section header table
+    writeVec({0x00, 0x00});                      // index of .shstrtab in the section header table
 
     // program header
-    writeVec({0x01, 0x00, 0x00, 0x00});    // type of section
-    writeVec({0x07, 0x00, 0x00, 0x00});    // flags
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // offset of this section in the file image
-    writeVec({0x10, 0, 0, 0, 0, 0, 0, 0}); // address of the segment in virtual memory
-    writeVec({0x10, 0, 0, 0, 0, 0, 0, 0}); // address of the segment in physical memory, if relevant
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // size in bytes of the segment within the image
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // size in bytes of the segment in memory
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // alignment of the section in memory
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // null bytes for 64 byte alignment
+    writeVec({0x01, 0x00, 0x00, 0x00});             // type of section
+    writeVec({0x07, 0x00, 0x00, 0x00});             // flags
+    writeVec({0x40, 0x01, 0, 0, 0, 0, 0, 0});       // offset of this section in the file image
+    writeVec({0, 0, 0x02, 0, 0, 0, 0, 0});          // address of the segment in virtual memory
+    writeVec({0, 0, 0x02, 0, 0, 0, 0, 0});          // address of the segment in physical memory, if relevant
+    writeVec(makeLittleEndian(textSection.size())); // number of bytes in the file image
+    writeVec(makeLittleEndian(textSection.size())); // number of bytes in virtual memory
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});             // alignment of the section in memory
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});             // null bytes for 64 byte alignment
 
     // section header (.shstrtab)
-    writeVec({0x00, 0x00, 0x00, 0x00});    // offset in the .shstrtab table of the name of this section
-    writeVec({0x01, 0x00, 0x00, 0x00});    // the type of section
-    writeVec({7, 0, 0, 0, 0, 0, 0, 0});    // flags
-    writeVec({0x10, 0, 0, 0, 0, 0, 0, 0}); // address of the section in virtual memory
-    writeVec({0x10, 0, 0, 0, 0, 0, 0, 0}); // offset of the section in the file image
-    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // size of the section in bytes
+    writeVec({0x01, 0x00, 0x00, 0x00});    // offset in the .shstrtab table of the name of this section
+    writeVec({0x03, 0x00, 0x00, 0x00});    // the type of section
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // flags
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // address of the section in virtual memory
+    writeVec({0, 0x01, 0, 0, 0, 0, 0, 0}); // offset of the section in the file image
+    writeVec({0x40, 0, 0, 0, 0, 0, 0, 0}); // size of the section in bytes
     writeVec({0, 0, 0, 0});                // index of any linked sections, none in this case
     writeVec({0, 0, 0, 0});                // any extra info about the section, nothing in this case
     writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // required alignment of the section
     writeVec({0, 0, 0, 0, 0, 0, 0, 0});    // size of the section if it has a fixed size
+
+    // section header (.text)
+    writeVec({0x0b, 0x00, 0x00, 0x00});             // offset in the .shstrtab table of the name of this section
+    writeVec({0x01, 0x00, 0x00, 0x00});             // the type of section
+    writeVec({7, 0, 0, 0, 0, 0, 0, 0});             // flags
+    writeVec({0x00, 0x00, 0x02, 0, 0, 0, 0, 0});    // address of the section in virtual memory
+    writeVec({0x40, 0x01, 0, 0, 0, 0, 0, 0});       // offset of the section in the file image
+    writeVec(makeLittleEndian(textSection.size())); // size of the section in bytes
+    writeVec({0, 0, 0, 0});                         // index of any linked sections, none in this case
+    writeVec({0, 0, 0, 0});                         // any extra info about the section, nothing in this case
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});             // required alignment of the section
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0});             // size of the section if it has a fixed size
+
+    // .shstrtab section
+    writeVec({0, '.', 's', 'h', 's', 't', 'r', 't', 'a', 'b', 0, '.', 't', 'e', 'x', 't'}); // actual content of .shstrtab
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});                             // null bytes for 64 byte alignment
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});                             // null bytes for 64 byte alignment
+    writeVec({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});                             // null bytes for 64 byte alignment
 
 	// write the actual code we want
 	for(uint8_t byte : textSection){
